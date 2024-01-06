@@ -70,7 +70,15 @@ export const login = createAsyncThunk<
 export const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    logout: (state) => {
+      state.isSuccess = false;
+      state.error = "";
+    },
+    clearErrorAction: (state) => {
+      state.error = "";
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(login.pending, (state) => {
@@ -86,10 +94,12 @@ export const authSlice = createSlice({
         }
       )
       .addCase(login.rejected, (state) => {
-        state.error = "failed";
+        state.error = "The user name or password are incorrect";
         state.isSuccess = false;
       });
   },
 });
+
+export const { logout, clearErrorAction } = authSlice.actions;
 
 export default authSlice.reducer;

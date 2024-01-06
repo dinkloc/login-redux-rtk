@@ -1,10 +1,12 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 
 import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { login } from "../store/slice/authSlice";
+import { clearErrorAction, login } from "../store/slice/authSlice";
 import styled from "styled-components";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Title = styled.h5`
   font-size: 1.5em;
   text-align: center;
@@ -28,7 +30,7 @@ const Input = styled.input`
   line-height: 1.25rem;
   color: #111827;
   background-color: #f9fafb;
-  margin: 10px 0 10px 0;
+  margin: 10px 0 20px 0;
 `;
 
 const Button = styled.button`
@@ -68,20 +70,24 @@ type FormValue = {
 const Login: React.FC = () => {
   const { register, handleSubmit } = useForm<FormValue>();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<FormValue> = (data) => {
     const { email, password } = data;
     dispatch(login({ email, password }));
   };
-  const isSuccess = useAppSelector((state) => state.isSuccess);
-  console.log(isSuccess);
-  const navigate = useNavigate();
+  const { isSuccess, error } = useAppSelector((state) => state);
   useEffect(() => {
     if (isSuccess) {
       navigate("/dashboard");
     }
-  }, [isSuccess, navigate]);
-
+    if (error) {
+      toast.error(error, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      dispatch(clearErrorAction());
+    }
+  }, [isSuccess, navigate, error, dispatch]);
   return (
     <div>
       <Title>VSII Login Training</Title>
@@ -103,6 +109,7 @@ const Login: React.FC = () => {
               placeholder="Password"
             />
           </div>
+          <ToastContainer />
           <WrapButton>
             <Button>Sign In</Button>
             <Button>Sign Up</Button>
