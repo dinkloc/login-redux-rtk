@@ -30,7 +30,7 @@ const StartComponent: React.FC = () => {
     <>
       <Div>
         <h1>
-          Tài khoản để test email: nguyendinhloc502@gmail.com, password: vsii
+          Account Test Demo (email: nguyendinhloc502@gmail.com, password: vsii)
         </h1>
       </Div>
       <Div>
